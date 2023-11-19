@@ -1,27 +1,28 @@
 import sys
 import random
-import PyQt5.QtGui
-import PyQt5.QtWidgets
-import PyQt5.uic
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
+from PyQt5.QtGui import QPainter, QColor
 
 
-class Example(PyQt5.QtWidgets.QWidget):
+class Example(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
-        PyQt5.uic.loadUi("Ui.ui", self)
         self.setWindowTitle('Рисование')
-        self.do_paint = False
+        self.resize(400, 300)
+        self.pushButton = QPushButton('Рисовать', self)
         self.pushButton.clicked.connect(self.paint)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.pushButton)
+        self.setLayout(layout)
+        self.do_paint = False
 
     def paintEvent(self, event):
         if self.do_paint:
-            qp = PyQt5.QtGui.QPainter()
-            qp.begin(self)
+            qp = QPainter(self)
             self.draw_flag(qp)
-            qp.end()
         self.do_paint = False
 
     def paint(self):
@@ -30,7 +31,7 @@ class Example(PyQt5.QtWidgets.QWidget):
 
     def draw_flag(self, qp):
         r = random.randint(1, 100)
-        qp.setBrush(PyQt5.QtGui.QColor(255, 255, 0))
+        qp.setBrush(QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
         qp.drawEllipse(
             random.randint(1, 100),
             random.randint(1, 100),
@@ -40,7 +41,7 @@ class Example(PyQt5.QtWidgets.QWidget):
 
 
 if __name__ == '__main__':
-    app = PyQt5.QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     ex = Example()
     ex.show()
     sys.exit(app.exec())
